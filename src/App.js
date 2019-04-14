@@ -1,26 +1,93 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import RecipeList from './components/RecipeList';
+import RecipeDetails from './components/RecipeDetails';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 class App extends Component {
+  state = {
+    recipes: [],
+    url: './data.json',
+    search: ''
+  };
+
+  getRecipes = () => {
+    const data = require('./data.json');
+    this.setState({
+      recipes: data.recipes
+    });
+  };
+
+  componentDidMount() {
+    this.getRecipes();
+  }
+
+  handleChange = e => {
+    this.setState({
+      search: e.target.value
+    });
+  };
+
+  handleSubmit = e => {
+    if (e.target.value === '') {
+      this.getRecipes();
+    } else {
+      const { recipes } = this.state;
+      const searcValue = e.target.value.toLowerCase();
+      let filteredRecipes = recipes.filter(recipe => {
+        return (
+          recipe.title
+            .toLowerCase()
+            .slice()
+            .indexOf(searcValue) !== -1
+        );
+      });
+      this.setState({
+        recipes: filteredRecipes
+      });
+    }
+  };
+
+  // handleSubmit = e => {
+  //   e.preventDefault();
+  //   const { recipes, search } = this.state;
+  //   let filteredRecipes = recipes.filter(recipe => {
+  //     return (
+  //       recipe.title
+  //         .toLowerCase()
+  //         .slice()
+  //         .indexOf(search.toLowerCase()) !== -1
+  //     );
+  //   });
+  //   this.setState({
+  //     recipes: filteredRecipes,
+  //     search: ''
+  //   });
+  // };
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <Route
+          exact
+          path='/'
+          render={props => (
+            <RecipeList
+              {...props}
+              recipes={this.state.recipes}
+              value={this.state.search}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+            />
+          )}
+        />
+        <Route
+          path='/details/:id'
+          render={props => (
+            <RecipeDetails {...props} recipes={this.state.recipes} />
+          )}
+        />
+      </Router>
     );
   }
 }
