@@ -48,23 +48,6 @@ class App extends Component {
     }
   };
 
-  // handleSubmit = e => {
-  //   e.preventDefault();
-  //   const { recipes, search } = this.state;
-  //   let filteredRecipes = recipes.filter(recipe => {
-  //     return (
-  //       recipe.title
-  //         .toLowerCase()
-  //         .slice()
-  //         .indexOf(search.toLowerCase()) !== -1
-  //     );
-  //   });
-  //   this.setState({
-  //     recipes: filteredRecipes,
-  //     search: ''
-  //   });
-  // };
-
   render() {
     return (
       <Router>
